@@ -14,6 +14,6 @@ def dic_letters_sorted(file):
 def tree_generation(dics):
     dec = {}
     for key, value in dics.items():
-        dec[key]="1"
+        dec[key]="1
     
 # %%
