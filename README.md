@@ -5,7 +5,7 @@ Le but est de concevoir un module python clef en main permettant de coder et dé
 
 ## Fonctions principales & Diagramme de flux
 
-![Diagramme de flux](Documentation/Media/Flux #1.svg)
+![Diagramme de flux](Documentation/Media/Flux_1.svg)
 
 ### Compression 
 Envoyer des données étant un processus honéreux, il est bon de réduire la taille des données envoyés sans perte de qualité. 
