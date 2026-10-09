@@ -13,5 +13,7 @@ Nous compressons le texte en entrée et le convertissons en binaire. Ce binaie e
 Nous utiliserons la compression Huffman.
 
 ### Chiffrement 
+
 ### Mise en Trame 
+Couper la liste de données (maintenant chiffrées) en trames, pour pouvoir les envoyer. Ces trames sont toutes de la même longueur, 8 bits (ou des multiples de 8). Pour ce faire, nous allons coder une fonction parseuse, que l'on pourra éventuellement appeler lorsque nécessaire.
 
