@@ -18,9 +18,12 @@ def tree_generation(dics):
     
 # %%
 # taille de la trame :
-b = 4  # 256
+b = 256
 
-def parseuse(bits):
+def parseuse(matrix):
+    # passage de matrice en liste
+    bits = matrix.flatten().tolist()
+    
     # nombre de trames (arrondi vers le haut)
     part = len(bits) // b
     if len(bits) % b != 0:
