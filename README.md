@@ -1,4 +1,4 @@
-# GrandProjetCommunication_WP4
+# GrandProjetCommunication_WP3
 
 ## Goal 
 Le but est de concevoir un module python clef en main permettant de coder et décoder des informations dans le contexte du GP "Communication avec la Terre".
