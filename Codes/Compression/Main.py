@@ -1,4 +1,6 @@
 #%%
+import math
+
 def dic_letters_sorted(file, DEBUG=False):
     dic={}
     with open(file,"r",encoding="utf-8") as f:
@@ -77,11 +79,90 @@ def encode_text(file, codes, DEBUG=False):
         print(len(bits), "bits pour le texte")
     return bits
 
-def stats(file):
-    bc = len(encode_text(file, encode_dic(huffman_codes, DEBUG=False), DEBUG=False):)
+def stats(file, DEBUG=False):
+    # On fait tourner toute la chaine de compression
+    dics = dic_letters_sorted(file)
+    codes = huffman_codes(dics)
+    dic_bits = encode_dic(codes)
+    text_bits = encode_text(file, codes)
+
+    # Taille du fichier original : chaque lettre en UTF-8 (1 a 4 octets)
+    nb_letters = sum(dics.values())
+    original_bits = 0
+    for key, value in dics.items():
+        original_bits = original_bits + len(key.encode("utf-8")) * 8 * value
+
+    compressed_bits = len(dic_bits) + len(text_bits)
+
+    # Entropie de Shannon : le minimum theorique de bits par lettre
+    entropy = 0
+    for value in dics.values():
+        p = value / nb_letters
+        entropy = entropy - p * math.log2(p)
+
+    # Longueur moyenne d'un code Huffman (pondere par la frequence)
+    avg_bits = len(text_bits) / nb_letters
+
+    # Code a longueur fixe : toutes les lettres ont le meme nombre de bits,
+    # juste assez pour numeroter les lettres differentes (ex : 100 lettres -> 7 bits)
+    fixed_len = math.ceil(math.log2(len(dics)))
+    fixed_bits = fixed_len * nb_letters
+
+    s = {
+        "utf8_avg": original_bits / nb_letters,
+        "fixed_len": fixed_len,
+        "fixed_bits": fixed_bits,
+        "nb_letters": nb_letters,
+        "nb_distinct": len(dics),
+        "original_bits": original_bits,
+        "dic_bits": len(dic_bits),
+        "text_bits": len(text_bits),
+        "compressed_bits": compressed_bits,
+        "ratio": compressed_bits / original_bits,
+        "gain": 1 - compressed_bits / original_bits,
+        "entropy": entropy,
+        "avg_bits": avg_bits,
+        "efficiency": entropy / avg_bits,
+    }
+
+    if DEBUG:
+        # Les 10 lettres les plus frequentes avec leur code
+        print("Top 10 des lettres :")
+        for key in list(dics)[:10]:
+            print(f"  {key!r:6} {dics[key]:8} fois  {dics[key] / nb_letters:6.2%}  code = {codes[key]}")
+    return s
+
+def print_stats(s):
+    print(f"Lettres dans le texte    : {s['nb_letters']}")
+    print(f"Lettres differentes      : {s['nb_distinct']}")
+    print()
+    print(f"Taille originale         : {s['original_bits']:>10} bits  ({s['original_bits'] / 8 / 1024:.1f} Ko)")
+    print(f"Taille dictionnaire      : {s['dic_bits']:>10} bits  ({s['dic_bits'] / 8 / 1024:.1f} Ko)")
+    print(f"Taille texte compresse   : {s['text_bits']:>10} bits  ({s['text_bits'] / 8 / 1024:.1f} Ko)")
+    print(f"Taille totale compressee : {s['compressed_bits']:>10} bits  ({s['compressed_bits'] / 8 / 1024:.1f} Ko)")
+    print()
+    print(f"Taux de compression      : {s['ratio']:.2%} de la taille originale")
+    print(f"Gain                     : {s['gain']:.2%}")
+    print()
+    print(f"Entropie (minimum theo.) : {s['entropy']:.4f} bits/lettre")
+    print(f"Longueur moyenne Huffman : {s['avg_bits']:.4f} bits/lettre")
+    print(f"Efficacite du code       : {s['efficiency']:.2%}")
+    print()
+    print("------Comparaison------")
+    print(f"{'Codage':<26}{'bits/lettre':>12}{'Taille (Ko)':>13}{'vs UTF-8':>10}")
+    lines = [
+        ("UTF-8", s["utf8_avg"], s["original_bits"]),
+        (f"Longueur fixe ({s['fixed_len']} bits)", s["fixed_len"], s["fixed_bits"]),
+        ("Huffman (texte seul)", s["avg_bits"], s["text_bits"]),
+        ("Huffman (+ dictionnaire)", s["compressed_bits"] / s["nb_letters"], s["compressed_bits"]),
+        ("Entropie (limite theo.)", s["entropy"], s["entropy"] * s["nb_letters"]),
+    ]
+    for name, per_letter, total in lines:
+        print(f"{name:<26}{per_letter:>12.4f}{total / 8 / 1024:>13.1f}{total / s['original_bits']:>10.2%}")
 
 # %%
 if __name__ == "__main__":
-
-
+    print("------Stats------")
+    file = input("Saisir File: ")
+    print_stats(stats(file, DEBUG=True))
     # %%
