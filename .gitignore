@@ -1,0 +1,4 @@
+__pycache__/
+*.ppm
+.venv/
+.DS_Store
