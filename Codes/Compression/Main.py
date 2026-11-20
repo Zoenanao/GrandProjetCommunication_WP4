@@ -49,7 +49,7 @@ def encode_dic(codes, DEBUG=False):
     # [nombre d'entrees : 16 bits]
     # puis pour chaque lettre :
     #   [lettre en UTF-8 : 8 a 32 bits] [longueur du code : 8 bits] [code]
-    bits = format(len(codes), "016b")   # entier > binaire sur 16 bits
+    bits = format(len(codes),  "016b")   # entier > binaire sur 16 bits
 
     for key, value in codes.items():
         # La lettre en UTF-8 : chaque octet ecrit sur 8 bits
@@ -77,14 +77,11 @@ def encode_text(file, codes, DEBUG=False):
         print(len(bits), "bits pour le texte")
     return bits
 
+def stats(file):
+    bc = len(encode_text(file, encode_dic(huffman_codes, DEBUG=False), DEBUG=False):)
+
 # %%
 if __name__ == "__main__":
-    file = "/Users/aleksi/Desktop/Projet/GrandProjetCommunication_WP4/INPUT/La_Peste_CAMUS"
-    dics = dic_letters_sorted(file)
-    codes = huffman_codes(dics, DEBUG=True)
-    print(codes)
-    dic_bits = encode_dic(codes, DEBUG=True)
-    print(len(dic_bits), "bits pour le dictionnaire",encode_dic(codes, DEBUG=False))
-    text_bits = encode_text(file, codes, DEBUG=True)
-    print(text_bits)   # les 100 premiers bits
+
+
     # %%
